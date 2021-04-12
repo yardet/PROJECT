@@ -43,9 +43,9 @@ void main()
 {
     //chessPosArray*** valid_moves = validKnightMoves();
     chessPosList* lst;
-    makeEmptyList(lst);
-    display(lst);
-    printList(lst);
+   // makeEmptyList(lst);
+   // display(lst);
+  //  printList(lst);
 }
 //chessPosArray*** validKnightMoves()
 //{
@@ -60,7 +60,7 @@ void check_allocation(void* res)
     }
 }
 
-void display(chessPosList* lst)
+/*void display(chessPosList* lst)
 {
 
 }
@@ -143,12 +143,12 @@ void insertDataToEndList(chessPosList* res, int num)
     insertNodeToEndOfList(res, node);
 }
 chessPosCell* AllocateDListNode(int num, chessPosCell* next)/*allocation of new node*/
-{
+/*{
     chessPosCell* res;
     res = (chessPosCell*)malloc(sizeof(chessPosCell));
     check_allocation(res);
     *(res->position)= (int*)malloc(sizeof(int));/*allocation of data*/
-    check_allocation(res);
+  /*  check_allocation(res);
     *(res->position)= num;
     res->next = next;
     return res;
@@ -165,4 +165,4 @@ void insertNodeToEndOfList(chessPosList* lst, chessPosCell* Tail)
         lst->tail->next = Tail;
         lst->tail = Tail;
     }
-}
+}*/
