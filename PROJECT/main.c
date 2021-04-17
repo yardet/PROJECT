@@ -31,9 +31,12 @@ void makeEmptyPosList(chessPosList* lst);
 int isPosAppear(chessPosList* lst, char posFirstChar, char posSecondChar);
 chessPosCell* createNewListNode(chessPos position, chessPosCell* nextNode);
 void insertPosCellToEndList(chessPosList* lst, chessPosCell* node);
+void Print_valid_moves(chessPosArray*** valid_moves);
+void Free_valid_moves(chessPosArray**** valid_moves);
 void main()
 {
     chessPosArray*** valid_moves = validKnightMoves();
+    //Print_valid_moves(valid_moves);
     chessPosCell node9 = { { 'E','1' }, NULL };
     chessPosCell node8 = { {'E', '1'}, &node9 };
     chessPosCell node7 = { {'E', '1'}, &node8 };
@@ -48,75 +51,119 @@ void main()
     //printList(&newList);
     display(&newList);
    // freeList(&newList);
+    //Free_valid_moves(&valid_moves);
  }
 chessPosArray*** validKnightMoves()
 {
     chessPosArray*** arr = (chessPosArray***)malloc(sizeof(chessPosArray**));
-    //check_allocation(arr);
+    check_allocation(arr);
     int i, j;
-    int count = -1;
+    int count = -1;  
     for (i = 0; i < 8; i++)
     {
-        arr[i] = (chessPosArray**)malloc(sizeof(chessPosArray*));
+        arr[i] = (chessPosArray**)malloc(sizeof(chessPosArray*)*8);
+        check_allocation(arr[i]);
         for (j = 0; j < 8; j++)
         {
-            //arr[i][j] = (chessPosArray*)malloc(sizeof(chessPosArray));
-            //check_allocation(arr[i][j]);
+            arr[i][j] = (chessPosArray*)malloc(sizeof(chessPosArray));
+            check_allocation(arr[i][j]);
+            arr[i][j]->positions = (chessPos*)malloc(sizeof(chessPos));
+            check_allocation(arr[i][j]->positions);
             if ((j + 1) <= 7 && (i - 2) >= 0)/*one right and two up*/
             {
                 count++;
-                arr[i][j]->positions[count][0] = (char)(i - 2) + 1 + 'A';
+                arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions,sizeof(chessPos) * (count+1));
+                arr[i][j]->positions[count][0] = (i - 2) + 'A';
                 arr[i][j]->positions[count][1] = (j + 1) + 1 + '0';
             }
             if (j + 2 <= 7 && i - 1 >= 0)/*two right and one up*/
             {
                 count++;
-                arr[i][j]->positions[count][0] = (char)(i - 1) + 1 + 'A';
+                arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
+                arr[i][j]->positions[count][0] = (i - 1) + 'A';
                 arr[i][j]->positions[count][1] = (j + 2) + 1 + '0';
             }
             if (j + 2 <= 7 && i + 1 <= 7)/*two right and one down*/
             {
                 count++;
-                //*arr[i][j]->positions[count] = (chessPos*)malloc(sizeof(chessPos));
-                arr[i][j]->positions[count][0] = (char)(i + 1) + 1 + 'A';
-                arr[i][j]->positions[count][1] = (j + 2) + 1 + '0';
+                arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
+                arr[i][j]->positions[count][0] = (i + 1) + 'A';
+                arr[i][j]->positions[count][1] = (j + 2) + 1 + '0' ;
             }
             if (j + 1 <= 7 && i + 2 <= 7)/*one right and two down*/
             {
                 count++;
-                arr[i][j]->positions[count][0] = (char)(i+2) + 1 + 'A';
+                arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
+                arr[i][j]->positions[count][0] =(i+2) + 'A';
                 arr[i][j]->positions[count][1] = (j + 1) + 1 + '0';
             }
             if (j - 1 >= 0 && i + 2 <= 7)/*one left and two down*/
             {
                 count++;
-                arr[i][j]->positions[count][0] = (char)(i + 2) + 1 + 'A';
+                arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
+                arr[i][j]->positions[count][0] = (i + 2) + 'A';
                 arr[i][j]->positions[count][1] = (j - 1) + 1 + '0';
             }
             if (j - 2 >= 0 && i + 1 <= 7)/*two left and one down*/
             {
                 count++;
-                arr[i][j]->positions[count][0] = (char)(i + 1) + 1 + 'A';
+                arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
+                arr[i][j]->positions[count][0] = (i + 1) + 'A';
                 arr[i][j]->positions[count][1] = (j - 2) + 1 + '0';
             }
             if (j - 2 >= 0 && i - 1 >= 0)/*two left and one up*/
             {
                 count++;
-                arr[i][j]->positions[count][0] = (char)(i - 1) + 1 + 'A';
+                arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
+                arr[i][j]->positions[count][0] = (i - 1) + 'A';
                 arr[i][j]->positions[count][1] = (j - 2) + 1 + '0';
             }
             if (j - 1 >= 0 && i - 2 >= 0)/*one left and two up*/
             {
                 count++;
-                arr[i][j]->positions[count][0] = (char)(i - 2) + 1 + 'A';
+                arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
+                arr[i][j]->positions[count][0] = (i - 2) + 'A';
                 arr[i][j]->positions[count][1] = (j - 1) + 1 + '0';
             }
-
-            arr[i][j]->size = count;
-            count = 0;
+            arr[i][j]->size = count+1;
+            count = -1;
         }
+        puts("\n");
     }
     return arr;
+}
+void Print_valid_moves(chessPosArray*** valid_moves)
+{
+    for (int i = 0; i <= 7; i++)
+    {
+        for (int j = 0; j <= 7; j++)
+        {
+            printf("%c%d->", i + 'A', j + 1);
+            for (int k = 0; k < valid_moves[i][j]->size; k++)
+            {
+                printf("%c%c,", valid_moves[i][j]->positions[k][0], valid_moves[i][j]->positions[k][1]);
+            }
+            puts("\n");
+        }
+        puts("\n");
+    }
+}
+void Free_valid_moves(chessPosArray**** valid_moves)
+{
+    for (int i = 0; i <= 7; i++)
+    {
+        for (int j = 0; j <= 7; j++)
+        {
+            /*for (int k = 0; k < valid_moves[i][j]->size; k++)
+            {
+                free(valid_moves[i][j]->positions[k]);
+            }*/
+            free((*valid_moves)[i][j]->positions);
+            free((*valid_moves)[i][j]);
+        }
+        free((*valid_moves)[i]);
+    }
+    free((*valid_moves));
 }
 void display(chessPosList* lst)
 {
@@ -186,13 +233,14 @@ void printList(chessPosList* lst)
     for (i = 0; i < 8; i++)
     {
         printf("%c->", i + 'A');
-        for (j = 0;j < 9; j++)
+        for (j = 0;j < 8; j++)
         {
             if (chessarray[i][j][0] > 1 && chessarray[i][j][0] <= 64)
                 printf("|%c", chessarray[i][j][0]);
             else
                 printf("| ");
         }
+        printf("|");
         puts("\n");
     }
     puts("--------------------\n");
