@@ -32,7 +32,7 @@ int isPosAppear(chessPosList* lst, char posFirstChar, char posSecondChar);
 chessPosCell* createNewListNode(chessPos position, chessPosCell* nextNode);
 void insertPosCellToEndList(chessPosList* lst, chessPosCell* node);
 void Print_valid_moves(chessPosArray*** valid_moves);
-void Free_valid_moves(chessPosArray**** valid_moves);
+void Free_valid_moves(chessPosArray*** valid_moves);
 void main()
 {
     chessPosArray*** valid_moves = validKnightMoves();
@@ -51,7 +51,7 @@ void main()
     //printList(&newList);
     display(&newList);
    // freeList(&newList);
-    //Free_valid_moves(&valid_moves);
+    Free_valid_moves(valid_moves);
  }
 chessPosArray*** validKnightMoves()
 {
@@ -148,22 +148,18 @@ void Print_valid_moves(chessPosArray*** valid_moves)
         puts("\n");
     }
 }
-void Free_valid_moves(chessPosArray**** valid_moves)
+void Free_valid_moves(chessPosArray*** valid_moves)
 {
     for (int i = 0; i <= 7; i++)
     {
         for (int j = 0; j <= 7; j++)
         {
-            /*for (int k = 0; k < valid_moves[i][j]->size; k++)
-            {
-                free(valid_moves[i][j]->positions[k]);
-            }*/
-            free((*valid_moves)[i][j]->positions);
-            free((*valid_moves)[i][j]);
+            free(valid_moves[i][j]->positions);
+            free(valid_moves[i][j]);
         }
-        free((*valid_moves)[i]);
+        free(valid_moves[i]);
     }
-    free((*valid_moves));
+    //free(valid_moves);
 }
 void display(chessPosList* lst)
 {
@@ -293,43 +289,6 @@ void insertPosCellToEndList(chessPosList* lst, chessPosCell* node)
     }
     node->next = NULL;
 }
-/*void insertDataToEndList(chessPosList* res, int num)
-{
-    chessPosCell* node = AllocateDListNode(num, NULL);
-    check_allocation(node);
-    insertNodeToEndOfList(res, node);
-}*/
-/*void printList(chessPosList* res)
-{
-    chessPosCell* current = res->head;
-    int j;
-    char i;
-    int count = 0;
-    while (current)
-    {
-        for (i = 'A'; i <= 'H'; i++)
-        {
-            for (j = 1; j <= 8; j++)
-            {
-                while (current)
-                {
-                    if (current->position == strn(i, j))
-                        printf("|%d|", count);
-                    else
-                        printf("|  |");
-                    count++;
-                    current = current->next;
-                }
-            }
-            puts("\n");
-        }
-        current = current->next;
-    }  
-}*/
-/*char* strn(char c,int n)
-{
-    return  
-}*/
 void freeList(chessPosList* lst)
 {
      chessPosCell* curr;
