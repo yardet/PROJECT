@@ -20,6 +20,23 @@ typedef struct __chessPosList
     chessPosCell* head;
     chessPosCell* tail;
 }chessPosList;
+
+
+typedef struct _treeNode
+{
+    chessPos position;
+    treeNodeListCell* next_possible_positions;
+}treeNode;
+typedef struct __treeNodeListCell
+{
+    treeNode* node;
+    struct __treeNodeListCell* next;
+}treeNodeListCell;
+typedef struct _pathTree
+{
+    treeNode* root;
+}pathTree;
+
 //void insertDataToEndList(chessPosList* res, int num);
 bool isEmptyList(chessPosList* lst);
 void freeList(chessPosList* lst);
@@ -33,10 +50,37 @@ chessPosCell* createNewListNode(chessPos position, chessPosCell* nextNode);
 void insertPosCellToEndList(chessPosList* lst, chessPosCell* node);
 void Print_valid_moves(chessPosArray*** valid_moves);
 void Free_valid_moves(chessPosArray*** valid_moves);
+
+typedef struct TreeNode
+{
+    int data;
+    struct TreeNode* right;
+    struct TreeNode* left;
+}TreeNode;
+
+typedef struct Tree
+{
+    TreeNode* root;
+}Tree;
+
+bool hasPathSum(Tree tr, int sum);
+
+bool areLeavesSortedAscFromLeftToRight(Tree tr);
+
+TreeNode* createNewTreeNode(int data, TreeNode* left, TreeNode* right);
+Tree BuildTree1();
+Tree BuildTree2();
+
+void PrintPreOrder(Tree tree);
+void PrintPreOrderAux(TreeNode* root, unsigned int level);
+
+void ClearTree(Tree* tree);
+void ClearTreeAux(TreeNode* root);
+bool hasPathSumaux(TreeNode* tr, int sum);
 void main()
 {
-    chessPosArray*** valid_moves = validKnightMoves();
-    //Print_valid_moves(valid_moves);
+   /*  chessPosArray*** valid_moves = validKnightMoves();
+    Print_valid_moves(valid_moves);
     chessPosCell node9 = { { 'E','1' }, NULL };
     chessPosCell node8 = { {'E', '1'}, &node9 };
     chessPosCell node7 = { {'E', '1'}, &node8 };
@@ -48,17 +92,153 @@ void main()
     chessPosCell node1 = { {'A', '4'}, &node2 };
    
     chessPosList newList = { &node1, &node9 };
-    //printList(&newList);
     display(&newList);
-   // freeList(&newList);
+    freeList(&newList);
     Free_valid_moves(valid_moves);
+   
+        Tree tr1 = BuildTree1();
+        Tree tr2 = BuildTree2();
+
+        PrintPreOrder(tr1);
+        PrintPreOrder(tr2);
+
+        /* Q1 */
+        hasPathSum(tr1, 22) ? printf("True\n") : printf("False\n");
+        hasPathSum(tr1, 30) ? printf("True\n") : printf("False\n");
+
+        /*/* Q2 
+        areLeavesSortedAscFromLeftToRight(tr1) ? printf("True\n") : printf("False\n");
+        areLeavesSortedAscFromLeftToRight(tr2) ? printf("True\n") : printf("False\n");
+        */
+        ClearTree(&tr1);
+        ClearTree(&tr2);
+    
  }
+bool hasPathSum(Tree tr, int sum)
+{
+    if (tr.root==NULL)
+        return false;
+    else
+    {
+        
+       
+            return (hasPathSumaux(tr.root, sum));
+        
+           
+    }
+}
+bool hasPathSumaux(TreeNode* tr, int sum)
+{
+    bool resleft, resright;
+    if (tr->left == NULL && tr->right == NULL)
+    {
+        if (tr->data == sum)
+            return true;
+        else
+            return false;
+    }
+    else
+    {
+        if (tr->left)
+            resleft = hasPathSumaux(tr->left, sum - tr->data);
+        if (tr->right)
+            resright = hasPathSumaux(tr->right, sum - tr->data);
+        return resleft || resright;
+    }
+}
+void PrintPreOrder(Tree tree)
+{
+    printf("\n=============== Pre Order ==============\n");
+    if (tree.root)
+        PrintPreOrderAux(tree.root, 0);
+    printf("\n=======================================\n\n");
+}
+
+void PrintPreOrderAux(TreeNode* root, unsigned int level)
+{
+    int i;
+    for (i = 0; i < (3 * level); i++)
+        putchar(' ');
+    printf("%d\n", root->data);
+    if (root->left)
+        PrintPreOrderAux(root->left, level + 1);
+    if (root->right)
+        PrintPreOrderAux(root->right, level + 1);
+}
+
+TreeNode* createNewTreeNode(int data, TreeNode* left, TreeNode* right)
+{
+    TreeNode* res = (TreeNode*)malloc(sizeof(TreeNode));
+
+    res->data = data;
+    res->left = left;
+    res->right = right;
+
+    return res;
+}
+
+Tree BuildTree1()
+{
+    Tree T;
+    TreeNode* n1, * n2, * n3, * n4, * n5, * n6, * n7, * n8;
+
+    n1 = createNewTreeNode(3, NULL, NULL);
+    n2 = createNewTreeNode(11, NULL, NULL);
+    n3 = createNewTreeNode(2, n1, n2);
+    n4 = createNewTreeNode(15, NULL, NULL);
+    n5 = createNewTreeNode(4, n3, n4);
+    n6 = createNewTreeNode(55, NULL, NULL);
+    n7 = createNewTreeNode(3, NULL, n6);
+    n8 = createNewTreeNode(5, n5, n7);
+
+    T.root = n8;
+
+    return T;
+}
+
+Tree BuildTree2()
+{
+    Tree T;
+    TreeNode* n1, * n2, * n3, * n4, * n5, * n6, * n7, * n8, * n9;
+
+    n1 = createNewTreeNode(3, NULL, NULL);
+    n2 = createNewTreeNode(12, n1, NULL);
+    n3 = createNewTreeNode(2, NULL, n2);
+    n4 = createNewTreeNode(1, NULL, NULL);
+    n5 = createNewTreeNode(8, NULL, n4);
+    n6 = createNewTreeNode(15, NULL, n5);
+    n7 = createNewTreeNode(4, n3, n6);
+    n8 = createNewTreeNode(6, NULL, NULL);
+    n9 = createNewTreeNode(10, n7, n8);
+
+    T.root = n9;
+
+    return T;
+}
+
+void ClearTree(Tree* tree)
+{
+    if (tree->root)
+    {
+        ClearTreeAux(tree->root);
+        tree->root = NULL;
+    }
+}
+
+void ClearTreeAux(TreeNode* root)
+{
+    if (root->left)
+        ClearTreeAux(root->left);
+    if (root->right)
+        ClearTreeAux(root->right);
+    free(root);
+}
 chessPosArray*** validKnightMoves()
 {
-    chessPosArray*** arr = (chessPosArray***)malloc(sizeof(chessPosArray**));
+    chessPosArray*** arr = (chessPosArray***)malloc(sizeof(chessPosArray**)*8);
     check_allocation(arr);
     int i, j;
-    int count = -1;  
+    int count = 0;  
     for (i = 0; i < 8; i++)
     {
         arr[i] = (chessPosArray**)malloc(sizeof(chessPosArray*)*8);
@@ -71,62 +251,62 @@ chessPosArray*** validKnightMoves()
             check_allocation(arr[i][j]->positions);
             if ((j + 1) <= 7 && (i - 2) >= 0)/*one right and two up*/
             {
-                count++;
                 arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions,sizeof(chessPos) * (count+1));
                 arr[i][j]->positions[count][0] = (i - 2) + 'A';
                 arr[i][j]->positions[count][1] = (j + 1) + 1 + '0';
+                count++;
             }
             if (j + 2 <= 7 && i - 1 >= 0)/*two right and one up*/
             {
-                count++;
                 arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
                 arr[i][j]->positions[count][0] = (i - 1) + 'A';
                 arr[i][j]->positions[count][1] = (j + 2) + 1 + '0';
+                count++;
             }
             if (j + 2 <= 7 && i + 1 <= 7)/*two right and one down*/
             {
-                count++;
                 arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
                 arr[i][j]->positions[count][0] = (i + 1) + 'A';
                 arr[i][j]->positions[count][1] = (j + 2) + 1 + '0' ;
+                count++;
             }
             if (j + 1 <= 7 && i + 2 <= 7)/*one right and two down*/
             {
-                count++;
                 arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
                 arr[i][j]->positions[count][0] =(i+2) + 'A';
                 arr[i][j]->positions[count][1] = (j + 1) + 1 + '0';
+                count++;
             }
             if (j - 1 >= 0 && i + 2 <= 7)/*one left and two down*/
             {
-                count++;
                 arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
                 arr[i][j]->positions[count][0] = (i + 2) + 'A';
                 arr[i][j]->positions[count][1] = (j - 1) + 1 + '0';
+                count++;
             }
             if (j - 2 >= 0 && i + 1 <= 7)/*two left and one down*/
-            {
-                count++;
+            {  
                 arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
                 arr[i][j]->positions[count][0] = (i + 1) + 'A';
                 arr[i][j]->positions[count][1] = (j - 2) + 1 + '0';
+                count++;
             }
             if (j - 2 >= 0 && i - 1 >= 0)/*two left and one up*/
-            {
-                count++;
+            {  
                 arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
                 arr[i][j]->positions[count][0] = (i - 1) + 'A';
                 arr[i][j]->positions[count][1] = (j - 2) + 1 + '0';
+                count++;
             }
             if (j - 1 >= 0 && i - 2 >= 0)/*one left and two up*/
             {
-                count++;
                 arr[i][j]->positions = (chessPos*)realloc(arr[i][j]->positions, sizeof(chessPos) * (count + 1));
                 arr[i][j]->positions[count][0] = (i - 2) + 'A';
                 arr[i][j]->positions[count][1] = (j - 1) + 1 + '0';
+                count++;
             }
-            arr[i][j]->size = count+1;
-            count = -1;
+            arr[i][j]->size = count;
+            count = 0;
         }
         puts("\n");
     }
@@ -159,7 +339,7 @@ void Free_valid_moves(chessPosArray*** valid_moves)
         }
         free(valid_moves[i]);
     }
-    //free(valid_moves);
+    free(valid_moves);
 }
 void display(chessPosList* lst)
 {
